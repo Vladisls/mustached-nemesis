@@ -36,7 +36,7 @@ public class PurchaseItemPanel extends JPanel {
     private JTextField quantityField;
     private JTextField nameField;
     private JTextField priceField;
-    private JComboBox<String> codeCombo;
+    private JComboBox<String> nameCombo;
 
     private JButton addItemButton;
 
@@ -85,15 +85,18 @@ public class PurchaseItemPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5, 2));
         panel.setBorder(BorderFactory.createTitledBorder("Product"));
+        
+        nameCombo = new JComboBox<String>(model.getWarehouseTableModel()
+        		.getAllNames());
 
         // Initialize the textfields
         barCodeField = new JTextField();
         quantityField = new JTextField("1");
-        nameField = new JTextField();
+        //nameField = new JTextField();
         priceField = new JTextField();
 
         // Fill the dialog fields if the bar code text field loses focus
-        codeCombo.addFocusListener(new FocusListener() {
+        nameCombo.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
             }
 
@@ -103,7 +106,7 @@ public class PurchaseItemPanel extends JPanel {
         });
         
         
-        nameField.setEditable(false);
+        barCodeField.setEditable(false);
         priceField.setEditable(false);
 
         // == Add components to the panel
@@ -118,7 +121,7 @@ public class PurchaseItemPanel extends JPanel {
 
         // - name
         panel.add(new JLabel("Name:"));
-        panel.add(codeCombo);
+        panel.add(nameCombo);
 
         // - price
         panel.add(new JLabel("Price:"));
@@ -154,7 +157,7 @@ public class PurchaseItemPanel extends JPanel {
     // to the barCode textfield.
     private StockItem getStockItemByBarcode() {
         try {
-        	String itemName = codeCombo.getSelectedItem().toString();
+        	String itemName = nameCombo.getSelectedItem().toString();
             //int code = Integer.parseInt(barCodeField.getText());
             return model.getWarehouseTableModel().getItemByName(itemName);
         } catch (NumberFormatException ex) {
@@ -204,7 +207,7 @@ public class PurchaseItemPanel extends JPanel {
     @Override
     public void setEnabled(boolean enabled) {
         this.addItemButton.setEnabled(enabled);
-        this.codeCombo.setEnabled(enabled);
+        this.nameCombo.setEnabled(enabled);
         this.quantityField.setEnabled(enabled);
     }
 
