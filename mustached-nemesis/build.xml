@@ -63,4 +63,10 @@
 	<target name="jrun" depends="dist" description="Run the application using jar file">
 		<java jar="${build.jar.dir}/mustached-nemesis.jar" fork="true" />
 	</target>
+	<!-- Run the application in console -->
+	<target name="runc" depends="build" description="Run the application (console)">
+		<java classname="ee.ut.math.tvt.mustached_nemesis.Intro" classpathref="test.classpath" fork="yes">
+			<arg value="console" />
+		</java>
+	</target>
 </project>
