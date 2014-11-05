@@ -36,98 +36,97 @@ public class PurchaseTab {
   private SalesSystemModel model;
 
 
-  public PurchaseTab(SalesDomainController controller,
-      SalesSystemModel model)
-  {
-    this.domainController = controller;
-    this.model = model;
-  }
+	public PurchaseTab(SalesDomainController controller, SalesSystemModel model) {
+		this.domainController = controller;
+		this.model = model;
+	}
 
 
   /**
    * The purchase tab. Consists of the purchase menu, current purchase dialog and
    * shopping cart table.
    */
-  public Component draw() {
-    JPanel panel = new JPanel();
+	public Component draw() {
+		JPanel panel = new JPanel();
 
-    // Layout
-    panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-    panel.setLayout(new GridBagLayout());
+		// Layout
+		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		panel.setLayout(new GridBagLayout());
 
-    // Add the purchase menu
-    panel.add(getPurchaseMenuPane(), getConstraintsForPurchaseMenu());
+		// Add the purchase menu
+		panel.add(getPurchaseMenuPane(), getConstraintsForPurchaseMenu());
 
-    // Add the main purchase-panel
-    purchasePane = new PurchaseItemPanel(model);
-    panel.add(purchasePane, getConstraintsForPurchasePanel());
+		// Add the main purchase-panel
+		purchasePane = new PurchaseItemPanel(model);
+		panel.add(purchasePane, getConstraintsForPurchasePanel());
 
-    return panel;
-  }
+		return panel;
+	}
 
 
 
 
   // The purchase menu. Contains buttons "New purchase", "Submit", "Cancel".
-  private Component getPurchaseMenuPane() {
-    JPanel panel = new JPanel();
+	private Component getPurchaseMenuPane() {
+		JPanel panel = new JPanel();
 
-    // Initialize layout
-    panel.setLayout(new GridBagLayout());
-    GridBagConstraints gc = getConstraintsForMenuButtons();
+		// Initialize layout
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints gc = getConstraintsForMenuButtons();
 
-    // Initialize the buttons
-    newPurchase = createNewPurchaseButton();
-    submitPurchase = createConfirmButton();
-    cancelPurchase = createCancelButton();
+		// Initialize the buttons
+		newPurchase = createNewPurchaseButton();
+		submitPurchase = createConfirmButton();
+		cancelPurchase = createCancelButton();
 
-    // Add the buttons to the panel, using GridBagConstraints we defined above
-    panel.add(newPurchase, gc);
-    panel.add(submitPurchase, gc);
-    panel.add(cancelPurchase, gc);
+		// Add the buttons to the panel, using GridBagConstraints we defined
+		// above
+		panel.add(newPurchase, gc);
+		panel.add(submitPurchase, gc);
+		panel.add(cancelPurchase, gc);
 
-    return panel;
-  }
+		return panel;
+	}
 
 
   // Creates the button "New purchase"
-  private JButton createNewPurchaseButton() {
-    JButton b = new JButton("New purchase");
-    b.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        newPurchaseButtonClicked();
-      }
-    });
+	private JButton createNewPurchaseButton() {
+		JButton b = new JButton("New purchase");
+		b.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				newPurchaseButtonClicked();
+			}
+		});
 
-    return b;
-  }
+		return b;
+	}
 
   // Creates the "Confirm" button
-  private JButton createConfirmButton() {
-    JButton b = new JButton("Confirm");
-    b.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        submitPurchaseButtonClicked();
-      }
-    });
-    b.setEnabled(false);
+	private JButton createConfirmButton() {
+		JButton b = new JButton("Confirm");
+		b.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				submitPurchaseButtonClicked();
+			}
+		});
+		b.setEnabled(false);
 
-    return b;
-  }
+		return b;
+	}
 
 
   // Creates the "Cancel" button
-  private JButton createCancelButton() {
-    JButton b = new JButton("Cancel");
-    b.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        cancelPurchaseButtonClicked();
-      }
-    });
-    b.setEnabled(false);
+	private JButton createCancelButton() {
+		JButton b = new JButton("Cancel");
+		b.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancelPurchaseButtonClicked();
+			}
+		});
+		b.setEnabled(false);
 
-    return b;
-  }
+		return b;
+	}
 
 
 
@@ -139,44 +138,44 @@ public class PurchaseTab {
 
 
   /** Event handler for the <code>new purchase</code> event. */
-  protected void newPurchaseButtonClicked() {
-    log.info("New sale process started");
-    try {
-      domainController.startNewPurchase();
-      startNewSale();
-    } catch (VerificationFailedException e1) {
-      log.error(e1.getMessage());
-    }
-  }
+	protected void newPurchaseButtonClicked() {
+		log.info("New sale process started");
+		try {
+			domainController.startNewPurchase();
+			startNewSale();
+		} catch (VerificationFailedException e1) {
+			log.error(e1.getMessage());
+		}
+	}
 
 
   /**  Event handler for the <code>cancel purchase</code> event. */
-  protected void cancelPurchaseButtonClicked() {
-    log.info("Sale cancelled");
-    try {
-      domainController.cancelCurrentPurchase();
-      endSale();
-      model.getCurrentPurchaseTableModel().clear();
-    } catch (VerificationFailedException e1) {
-      log.error(e1.getMessage());
-    }
-  }
+	protected void cancelPurchaseButtonClicked() {
+		log.info("Sale cancelled");
+		try {
+			domainController.cancelCurrentPurchase();
+			endSale();
+			model.getCurrentPurchaseTableModel().clear();
+		} catch (VerificationFailedException e1) {
+			log.error(e1.getMessage());
+		}
+	}
 
 
   /** Event handler for the <code>submit purchase</code> event. */
-  protected void submitPurchaseButtonClicked() {
-    log.info("Sale complete");
-    try {
-      log.debug("Contents of the current basket:\n" + model.getCurrentPurchaseTableModel());
-      domainController.submitCurrentPurchase(
-          model.getCurrentPurchaseTableModel().getTableRows()
-      );
-      endSale();
-      model.getCurrentPurchaseTableModel().clear();
-    } catch (VerificationFailedException e1) {
-      log.error(e1.getMessage());
-    }
-  }
+	protected void submitPurchaseButtonClicked() {
+		log.info("Sale complete");
+		try {
+			log.debug("Contents of the current basket:\n"
+					+ model.getCurrentPurchaseTableModel());
+			domainController.submitCurrentPurchase(model
+					.getCurrentPurchaseTableModel().getTableRows());
+			endSale();
+			model.getCurrentPurchaseTableModel().clear();
+		} catch (VerificationFailedException e1) {
+			log.error(e1.getMessage());
+		}
+	}
 
 
 
@@ -185,24 +184,24 @@ public class PurchaseTab {
    */
 
   // switch UI to the state that allows to proceed with the purchase
-  private void startNewSale() {
-    purchasePane.reset();
+	private void startNewSale() {
+		purchasePane.reset();
 
-    purchasePane.setEnabled(true);
-    submitPurchase.setEnabled(true);
-    cancelPurchase.setEnabled(true);
-    newPurchase.setEnabled(false);
-  }
+		purchasePane.setEnabled(true);
+		submitPurchase.setEnabled(true);
+		cancelPurchase.setEnabled(true);
+		newPurchase.setEnabled(false);
+	}
 
   // switch UI to the state that allows to initiate new purchase
-  private void endSale() {
-    purchasePane.reset();
+	private void endSale() {
+		purchasePane.reset();
 
-    cancelPurchase.setEnabled(false);
-    submitPurchase.setEnabled(false);
-    newPurchase.setEnabled(true);
-    purchasePane.setEnabled(false);
-  }
+		cancelPurchase.setEnabled(false);
+		submitPurchase.setEnabled(false);
+		newPurchase.setEnabled(true);
+		purchasePane.setEnabled(false);
+	}
 
 
 
