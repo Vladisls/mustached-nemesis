@@ -68,6 +68,10 @@ public class IntroUI extends JFrame {
 		// Get current version
 		Properties prop = new Properties();
 		prop.load(getClass().getResourceAsStream("/version.properties"));
+		
+		Properties appProp = new Properties();
+		appProp.load(getClass().getResourceAsStream("/application.properties"));
+		
 		// Get logo
 		image = ImageIO.read(getClass().getResource("/images/Dali.png"));
 		logo = new JLabel(new ImageIcon(image));

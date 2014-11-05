@@ -142,10 +142,10 @@ public class PurchaseItemPanel extends JPanel {
 
     // Fill dialog with data from the "database".
     public void fillDialogFields() {
-        StockItem stockItem = getStockItemByBarcode();
+        StockItem stockItem = getStockItemByName();
 
         if (stockItem != null) {
-            nameField.setText(stockItem.getName());
+            barCodeField.setText(String.valueOf(stockItem.getId()));
             String priceString = String.valueOf(stockItem.getPrice());
             priceField.setText(priceString);
         } else {
@@ -155,7 +155,7 @@ public class PurchaseItemPanel extends JPanel {
 
     // Search the warehouse for a StockItem with the bar code entered
     // to the barCode textfield.
-    private StockItem getStockItemByBarcode() {
+    private StockItem getStockItemByName() {
         try {
         	String itemName = nameCombo.getSelectedItem().toString();
             //int code = Integer.parseInt(barCodeField.getText());
@@ -172,7 +172,7 @@ public class PurchaseItemPanel extends JPanel {
      */
     public void addItemEventHandler() {
         // add chosen item to the shopping cart.
-        StockItem stockItem = getStockItemByBarcode();
+        StockItem stockItem = getStockItemByName();
         if (stockItem != null) {
             int quantity;
             try {
@@ -217,7 +217,7 @@ public class PurchaseItemPanel extends JPanel {
     public void reset() {
         //barCodeField.setText("");
         quantityField.setText("1");
-        nameField.setText("");
+        barCodeField.setText("");
         priceField.setText("");
     }
 

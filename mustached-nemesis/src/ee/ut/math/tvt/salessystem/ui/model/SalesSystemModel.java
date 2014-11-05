@@ -26,10 +26,7 @@ public class SalesSystemModel {
     //Sales controller
     private final SalesDomainController domainController;
 
-    /**
-     * Construct application model.
-     * @param domainController Sales domain controller.
-     */
+    
     public SalesSystemModel(SalesDomainController domainController) {
         this.domainController = domainController;
         

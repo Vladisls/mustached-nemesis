@@ -32,7 +32,7 @@ public class HistoryTab {
 		this.model = model;
 	}
 	
-    public HistoryTab() {} 
+    //public HistoryTab() {} 
     
     public Component draw() {
     	JPanel panel = new JPanel();
@@ -52,6 +52,7 @@ public class HistoryTab {
     	}
     
     private void createHistoryTable() {
+    	//System.out.println(model.getSalesHistoryModel());
 		historyTable = new JTable(model.getSalesHistoryModel());
 		JTableHeader header = historyTable.getTableHeader();
 		header.setReorderingAllowed(false);
