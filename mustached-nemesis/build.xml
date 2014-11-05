@@ -69,4 +69,61 @@
 			<arg value="console" />
 		</java>
 	</target>
+	<!--Git task/macro used for different git commands -->
+	<macrodef name="git">
+		<attribute name="command"/>
+		<attribute name="dir" default=""/>
+		<element name="args" optional="true"/>
+		<sequential>
+			<echo message="git @{command}"/>
+			<exec executable="git" dir="@{dir}">
+				<arg value="@{command}"/>
+				<args/>
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<!--Commit changes-->
+	<target name="git_commit" description="Commit to a local repository and push">
+
+		<input message="Username" addproperty="git_username"/>
+		<input message="Password" addproperty="git_password"/>
+		<input message="Commit message" addproperty="message" />
+		<git command="add">
+			<args>
+				<arg value="-A" />
+			</args>
+		</git>
+		<git command="commit">
+			<args>
+				<arg value="-m ${message}" />
+			</args>
+		</git>
+		<git command="push">
+			<args>
+				<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git"/>
+			</args>
+		</git>
+	</target>
+	<!--Create new tag-->
+	<target name="git_tag" description="Create a new tag">
+		<input message="Username" addproperty="git_username"/>
+		<input message="Password" addproperty="git_password"/>
+		<input message="Comment" addproperty="comment" />
+		<input message="Tag name" addproperty="tag" />
+		<git command="tag">
+			<args>
+				<arg value="-a" />
+				<arg value="${tag}" />
+				<arg value="-m ${comment}" />
+			</args>
+		</git>
+		<git command="push">
+			<args>
+				<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git"/>
+				<arg value="--tags" />
+			</args>
+		</git>
+	</target>
+
 </project>
