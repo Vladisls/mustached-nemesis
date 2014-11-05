@@ -18,10 +18,12 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
 
     protected List<T> rows;
     protected final String[] headers;
+    protected final List<String> names;
 
     public SalesSystemTableModel(final String[] headers) {
         this.headers = headers;
         rows = new ArrayList<T>();
+        names = new ArrayList<String>();
     }
 
     /**
@@ -56,7 +58,19 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
             if (item.getId() == id)
                 return item;
         }
-        throw new NoSuchElementException();
+        //throw new NoSuchElementException();
+        return null;
+    }
+    
+    public T getItemByName(final String name) {
+    	for (final T item : rows) {
+    		if (item.getName() == name)
+    			return item;
+    	}
+    	return null;
+    }
+    public String[] getAllNames() {
+    	return names.toArray(new String[names.size()]);
     }
 
     public List<T> getTableRows() {
@@ -71,6 +85,9 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
     public void populateWithData(final List<T> data) {
         rows.clear();
         rows.addAll(data);
+        for (final T elem : rows) {
+        	names.add(elem.getName());
+        }
     }
     
     
