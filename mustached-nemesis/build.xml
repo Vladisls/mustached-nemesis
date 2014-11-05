@@ -25,7 +25,7 @@
 	<!-- Executes application via class Intro -->
 	<target name="run" depends="build" description="Run the application">
 		<java
-		          classname="ee.ut.math.tvt.[team].Intro"
+		          classname="ee.ut.math.tvt.mustached_nemesis.Intro"
 		            classpathref="run.classpath"
 		            fork="yes">
 		          <jvmarg value="-Xdebug" />
