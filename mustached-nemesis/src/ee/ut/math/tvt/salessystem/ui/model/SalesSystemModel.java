@@ -1,5 +1,7 @@
 package ee.ut.math.tvt.salessystem.ui.model;
 
+import javax.swing.DefaultComboBoxModel;
+
 import org.apache.log4j.Logger;
 
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
@@ -8,55 +10,73 @@ import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
  * Main model. Holds all the other models.
  */
 public class SalesSystemModel {
-    
-    private static final Logger log = Logger.getLogger(SalesSystemModel.class);
 
-    // Warehouse model
-    private StockTableModel warehouseTableModel;
-    
-    // Current shopping cart model
-    private PurchaseInfoTableModel currentPurchaseTableModel;
-    
-    //History model
-    private SalesHistoryModel salesHistoryModel;
-    
-    //Model for viewing specific order info on history tab
-    private PurchaseInfoTableModel historyPurchaseTableModel;
+	private static final Logger log = Logger.getLogger(SalesSystemModel.class);
 
-    //Sales controller
-    private final SalesDomainController domainController;
+	// Warehouse model
+	private StockTableModel warehouseTableModel;
 
-    /**
-     * Construct application model.
-     * @param domainController Sales domain controller.
-     */
-    public SalesSystemModel(SalesDomainController domainController) {
-        this.domainController = domainController;
-        
-        warehouseTableModel = new StockTableModel();
-        currentPurchaseTableModel = new PurchaseInfoTableModel();
-        historyPurchaseTableModel = new PurchaseInfoTableModel();
-        salesHistoryModel = new SalesHistoryModel();
+	// Current shopping cart model
+	private PurchaseInfoTableModel currentPurchaseTableModel;
 
-        // populate stock model with data from the warehouse
-        warehouseTableModel.populateWithData(domainController.loadWarehouseState());
+	// History model
+	private SalesHistoryModel salesHistoryModel;
 
-    }
+	// Model for viewing specific order info on history tab
+	private PurchaseInfoTableModel historyPurchaseTableModel;
 
-    public StockTableModel getWarehouseTableModel() {
-        return warehouseTableModel;
-    }
+	// Sales controller
+	private final SalesDomainController domainController;
 
-    public PurchaseInfoTableModel getCurrentPurchaseTableModel() {
-        return currentPurchaseTableModel;
-    }
-    
-    public PurchaseInfoTableModel getHistoryPurchaseTableModel() {
-    	return historyPurchaseTableModel;
-    }
-    
-    public SalesHistoryModel getSalesHistoryModel() {
-    	return salesHistoryModel;
-    }
-    
+	// ComboBox model
+	private DefaultComboBoxModel<String> salesComboModel;
+
+	/**
+	 * Construct application model.
+	 * 
+	 * @param domainController
+	 *            Sales domain controller.
+	 */
+	public SalesSystemModel(SalesDomainController domainController) {
+		this.domainController = domainController;
+
+		warehouseTableModel = new StockTableModel();
+		currentPurchaseTableModel = new PurchaseInfoTableModel();
+		historyPurchaseTableModel = new PurchaseInfoTableModel();
+		salesHistoryModel = new SalesHistoryModel();
+
+		// populate stock model with data from the warehouse
+		warehouseTableModel.populateWithData(domainController
+				.loadWarehouseState());
+
+		// populate stock model with data from the warehouse
+		salesHistoryModel.populateWithData(domainController
+				.loadSaleHistoryState());
+
+		// create and populate combobox model with warehouse
+		salesComboModel = new DefaultComboBoxModel<String>(
+				warehouseTableModel.getAllNames());
+
+	}
+
+	public StockTableModel getWarehouseTableModel() {
+		return warehouseTableModel;
+	}
+
+	public PurchaseInfoTableModel getCurrentPurchaseTableModel() {
+		return currentPurchaseTableModel;
+	}
+
+	public PurchaseInfoTableModel getHistoryPurchaseTableModel() {
+		return historyPurchaseTableModel;
+	}
+
+	public SalesHistoryModel getSalesHistoryModel() {
+		return salesHistoryModel;
+	}
+
+	public DefaultComboBoxModel<String> getSalesComboBoxModel() {
+		return salesComboModel;
+	}
+
 }

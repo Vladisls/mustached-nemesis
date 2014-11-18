@@ -5,6 +5,7 @@ import java.util.List;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
+import ee.ut.math.tvt.salessystem.domain.data.SoldHistoryItem;
 
 /**
  * Sales domain controller is responsible for the domain specific business
@@ -25,7 +26,17 @@ public interface SalesDomainController {
 	 * Initiate new business transaction - purchase of the goods.
 	 * 
 	 * @throws VerificationFailedException
+	 * 
 	 */
+	
+	public List<SoldHistoryItem> loadSaleHistoryState();
+	// business processes
+	/**
+	* Initiate new business transaction - purchase of the goods.
+	*
+	* @throws VerificationFailedException
+	*/
+	
 	public void startNewPurchase() throws VerificationFailedException;
 
 	/**
