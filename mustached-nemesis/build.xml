@@ -48,7 +48,8 @@
 	<target name="build" description="Build the system">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.classes.dir}" />
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" includeantruntime="false">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" 
+			debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" includeantruntime="false">
 			<classpath refid="compile.classpath" />
 		</javac>
 		<copy todir="${build.classes.dir}">
@@ -57,7 +58,7 @@
 			</fileset>
 		</copy>
 	</target>
-	<!-- Create a jar file in build/jar folder -->
+	<!-- Create a jar file in lib/jar folder -->
 	<target name="dist" depends="build" description="Create a jar file">
 		<!-- Update version.properties -->
 		<propertyfile file="${resource.dir}/version.properties">
@@ -68,6 +69,7 @@
 		<propertyfile file="${resource.dir}/version.properties">
 			<entry key="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}" />
 		</propertyfile>
+		
 		<!-- Create jar -->
 		<mkdir dir="${build.jar.dir}" />
 		<jar destfile="${build.jar.dir}\mustached-nemesis.jar" basedir="${build.dir}/classes">

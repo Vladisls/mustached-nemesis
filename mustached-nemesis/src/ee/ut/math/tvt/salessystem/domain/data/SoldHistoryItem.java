@@ -2,11 +2,23 @@ package ee.ut.math.tvt.salessystem.domain.data;
 
 import java.util.List;
 
+@Entity
+@Table(name = "HISTORYITEM")
 public class SoldHistoryItem implements Cloneable {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@Column(name = "DATE")
 	private String date;
+	@Column(name = "TIME")
 	private String time;
+	@Column(name = "TOTAL")
 	private double total;
+	@OneToMany(mappedBy = "historyitem")
 	private List<SoldItem> soldItems;
+
+	public SoldHistoryItem() {
+	}
 
 	public SoldHistoryItem(String date, String time, List<SoldItem> soldItems) {
 		this.date = date;
