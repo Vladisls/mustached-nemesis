@@ -2,6 +2,15 @@ package ee.ut.math.tvt.salessystem.domain.data;
 
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Entity;
+
 @Entity
 @Table(name = "HISTORYITEM")
 public class SoldHistoryItem implements Cloneable {
