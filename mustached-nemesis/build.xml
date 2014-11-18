@@ -5,6 +5,17 @@
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="build.jar.dir" value="${build.dir}/jar" />
 	<property name="resource.dir" value="${basedir}/resources" />
+
+	<!-- database variables -->
+	<property name="conf.dir" value="${basedir}/conf" />
+	<property name="data.dir" value="${basedir}/data" />
+	<property name="db.file" value="${data.dir}/POSdb" />
+	<property name="db.alias" value="POS" />
+	<property name="db.url" value="jdbc:hsqldb:hsql://localhost/POS" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="lib.hibernate.dir" value="${lib.dir}/hibernate" />
+	
+
 	<!-- Classpath definitions -->
 	<path id="compile.classpath">
 		<fileset dir="${lib.dir}">
@@ -14,14 +25,7 @@
 			<include name="*.jar" />
 		</fileset>
 	</path>
-	<!-- database variables -->
-	<property name="conf.dir" value="${basedir}/conf" />
-	<property name="data.dir" value="${basedir}/data" />
-	<property name="db.file" value="${data.dir}/POSdb" />
-	<property name="db.alias" value="POS" />
-	<property name="db.url" value="jdbc:hsqldb:hsql://localhost/POS" />
-	<property name="lib.hibernate.dir" value="${lib.dir}/hibernate" />
-
+	
 	<path id="run.classpath">
 		<pathelement location="${build.classes.dir}" />
 		<pathelement location="${conf.dir}" />
