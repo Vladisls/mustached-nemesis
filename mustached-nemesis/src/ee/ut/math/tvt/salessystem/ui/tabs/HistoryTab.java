@@ -32,27 +32,26 @@ public class HistoryTab {
 		this.model = model;
 	}
 	
-    //public HistoryTab() {} 
+    public HistoryTab() {} 
     
-	public Component draw() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
-		// Creates new table
-		createHistoryTable();
-		GridBagConstraints gc = new GridBagConstraints();
-		gc.fill = GridBagConstraints.BOTH;
-		gc.weightx = 1.0;
-		gc.weighty = 0.7;
-		panel.add(historyScrollPane, gc);
-		// New table for specific orders
-		createSpecificOrderTable();
-		gc.gridy = 1;
-		panel.add(orderScrollPane, gc);
-		return panel;
-	}
+    public Component draw() {
+    	JPanel panel = new JPanel();
+    	panel.setLayout(new GridBagLayout());
+    	//Creates new table
+    	createHistoryTable();
+    	GridBagConstraints gc = new GridBagConstraints();
+    	gc.fill = GridBagConstraints.BOTH;
+    	gc.weightx = 1.0;
+    	gc.weighty = 0.7;
+    	panel.add(historyScrollPane, gc);
+    	//New table for specific orders
+    	createSpecificOrderTable();
+    	gc.gridy=1;
+    	panel.add(orderScrollPane, gc);
+    	return panel;
+    	}
     
     private void createHistoryTable() {
-    	//System.out.println(model.getSalesHistoryModel());
 		historyTable = new JTable(model.getSalesHistoryModel());
 		JTableHeader header = historyTable.getTableHeader();
 		header.setReorderingAllowed(false);

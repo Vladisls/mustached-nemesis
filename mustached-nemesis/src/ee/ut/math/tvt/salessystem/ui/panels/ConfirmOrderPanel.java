@@ -133,13 +133,12 @@ public class ConfirmOrderPanel extends JPanel {
 		try{
 			change = Double.parseDouble(payAmountField.getText())
 					- Double.parseDouble(orderSumLabelValue.getText());
-			//System.out.println(change);
 			if (change < 0)
 				throw new NumberFormatException();
 			else
 				changeLabelValue.setText(String.format("%.2f", change).replace(
 						",", "."));
-		} catch (NumberFormatException e) {
+		}catch (NumberFormatException e) {
 			changeLabelValue.setText("Invalid input");
 		}
 	}

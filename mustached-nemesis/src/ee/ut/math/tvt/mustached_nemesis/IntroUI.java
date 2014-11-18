@@ -68,17 +68,14 @@ public class IntroUI extends JFrame {
 		// Get current version
 		Properties prop = new Properties();
 		prop.load(getClass().getResourceAsStream("/version.properties"));
-		
-		Properties appProp = new Properties();
-		appProp.load(getClass().getResourceAsStream("/application.properties"));
-		
 		// Get logo
 		image = ImageIO.read(getClass().getResource("/images/Dali.png"));
 		logo = new JLabel(new ImageIcon(image));
-		teamName = new JLabel(appProp.getProperty("name"));
-		teamLeader = new JLabel("Team leader " + appProp.getProperty("leader"));
-		leaderMail = new JLabel(appProp.getProperty("leadermail"));
-		teamMembers = new JLabel(appProp.getProperty("members"));
+		teamName = new JLabel("Mustached Nemesis");
+		teamLeader = new JLabel("Team leader Joonas Kriisk");
+		leaderMail = new JLabel("joonas.kriisk@gmail.com");
+		teamMembers = new JLabel(
+				"Kristiine Saarmann, Joonas Kriisk, Vladislav Stafinjak");
 		softVer = new JLabel("Current version: "
 				+ prop.getProperty("build.number"));
 		Font f = new Font("Arial", Font.ITALIC, 17);
