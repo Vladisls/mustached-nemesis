@@ -51,4 +51,9 @@ public class SalesHistoryModel extends AbstractTableModel {
 	public String getColumnName(final int columnIndex) {
 		return headers[columnIndex];
 	}
+
+	public void populateWithData(final List<SoldHistoryItem> data) {
+		rows.clear();
+		rows.addAll(data);
+	}
 }
