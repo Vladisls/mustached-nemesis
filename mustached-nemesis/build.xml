@@ -7,30 +7,42 @@
 	<property name="resource.dir" value="${basedir}/resources" />
 	<!-- Classpath definitions -->
 	<path id="compile.classpath">
-		<fileset dir="lib">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.hibernate.dir}">
 			<include name="*.jar" />
 		</fileset>
 	</path>
-	<path id="test.classpath">
+	<!-- database variables -->
+	<property name="conf.dir" value="${basedir}/conf" />
+	<property name="data.dir" value="${basedir}/data" />
+	<property name="db.file" value="${data.dir}/POSdb" />
+	<property name="db.alias" value="POS" />
+	<property name="db.url" value="jdbc:hsqldb:hsql://localhost/POS" />
+	<property name="lib.hibernate.dir" value="${lib.dir}/hibernate" />
+
+	<path id="run.classpath">
 		<pathelement location="${build.classes.dir}" />
-		<fileset dir="lib">
+		<pathelement location="${conf.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.hibernate.dir}">
 			<include name="*.jar" />
 		</fileset>
 	</path>
-	<!-- Runnable definitions -->
+
 	<!-- Remove previous files created by previous build -->
 	<target name="clean" description="Clean up build system results">
 		<delete dir="${build.dir}" />
 	</target>
 	<!-- Executes application via class Intro -->
 	<target name="run" depends="build" description="Run the application">
-		<java
-		          classname="ee.ut.math.tvt.mustached_nemesis.Intro"
-		            classpathref="run.classpath"
-		            fork="yes">
-		          <jvmarg value="-Xdebug" />
-		          <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044" />
-		        </java>
+		<java classname="ee.ut.math.tvt.mustached_nemesis.Intro" classpathref="run.classpath" fork="yes">
+			<jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044" />
+		</java>
 	</target>
 	<!-- Compile the source code and set files in the right places -->
 	<target name="build" description="Build the system">
@@ -77,14 +89,14 @@
 	</target>
 	<!--Git task/macro used for different git commands -->
 	<macrodef name="git">
-		<attribute name="command"/>
-		<attribute name="dir" default=""/>
-		<element name="args" optional="true"/>
+		<attribute name="command" />
+		<attribute name="dir" default="" />
+		<element name="args" optional="true" />
 		<sequential>
-			<echo message="git @{command}"/>
+			<echo message="git @{command}" />
 			<exec executable="git" dir="@{dir}">
-				<arg value="@{command}"/>
-				<args/>
+				<arg value="@{command}" />
+				<args />
 			</exec>
 		</sequential>
 	</macrodef>
@@ -92,8 +104,8 @@
 	<!--Commit changes-->
 	<target name="git_commit" description="Commit to a local repository and push">
 
-		<input message="Username" addproperty="git_username"/>
-		<input message="Password" addproperty="git_password"/>
+		<input message="Username" addproperty="git_username" />
+		<input message="Password" addproperty="git_password" />
 		<input message="Commit message" addproperty="message" />
 		<git command="add">
 			<args>
@@ -107,14 +119,14 @@
 		</git>
 		<git command="push">
 			<args>
-				<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git"/>
+				<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git" />
 			</args>
 		</git>
 	</target>
 	<!--Create new tag-->
 	<target name="git_tag" description="Create a new tag">
-		<input message="Username" addproperty="git_username"/>
-		<input message="Password" addproperty="git_password"/>
+		<input message="Username" addproperty="git_username" />
+		<input message="Password" addproperty="git_password" />
 		<input message="Comment" addproperty="comment" />
 		<input message="Tag name" addproperty="tag" />
 		<git command="tag">
@@ -126,7 +138,7 @@
 		</git>
 		<git command="push">
 			<args>
-				<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git"/>
+				<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git" />
 				<arg value="--tags" />
 			</args>
 		</git>
