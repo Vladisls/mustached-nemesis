@@ -1,135 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="mustached-nemesis" default="build">
+	<!-- database variables -->
 	<property name="build.dir" value="${basedir}/build" />
 	<property name="build.classes.dir" value="${build.dir}/classes/" />
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="build.jar.dir" value="${build.dir}/jar" />
 	<property name="resource.dir" value="${basedir}/resources" />
+	<property name="data.dir"	value="${basedir}/data"/>
+	<property name="db.file"	value="${data.dir}/POSdb"/>
+	<property name="db.alias"	value="POS"/>
+	<property name="db.url" 	value="jdbc:hsqldb:hsql://localhost/POS"/>
+	<property name="lib.hibernate.dir"   value="${lib.dir}/hibernate"/>
 	<!-- Classpath definitions -->
 	<path id="compile.classpath">
-		<fileset dir="lib">
-			<include name="*.jar" />
+		<fileset dir="${lib.hibernate.dir}">
+			<include name="*.jar"/>
 		</fileset>
-	</path>
-	<path id="test.classpath">
-		<pathelement location="${build.classes.dir}" />
-		<fileset dir="lib">
-			<include name="*.jar" />
-		</fileset>
-	</path>
-	<!-- Runnable definitions -->
-	<!-- Remove previous files created by previous build -->
-	<target name="clean" description="Clean up build system results">
-		<delete dir="${build.dir}" />
-	</target>
-	<!-- Executes application via class Intro -->
-	<target name="run" depends="build" description="Run the application">
-		<java
+		</path>
+		<path id="test.classpath">
+			<pathelement location="${build.classes.dir}" />
+			<fileset dir="lib">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<path id="run.classpath">
+			<pathelement location="${build.classes.dir}"/>
+			<!-- configuration -->
+			<pathelement location="${conf.dir}"/>
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${lib.hibernate.dir}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+		<!-- Runnable definitions -->
+		<!-- Remove previous files created by previous build -->
+		<target name="clean" description="Clean up build system results">
+			<delete dir="${build.dir}" />
+		</target>
+		<!-- Executes application via class Intro -->
+		<target name="run" depends="build" description="Run the application">
+			<java
 		          classname="ee.ut.math.tvt.mustached_nemesis.Intro"
 		            classpathref="run.classpath"
 		            fork="yes">
-		          <jvmarg value="-Xdebug" />
-		          <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044" />
-		        </java>
-	</target>
-	<!-- Compile the source code and set files in the right places -->
-	<target name="build" description="Build the system">
-		<mkdir dir="${build.dir}" />
-		<mkdir dir="${build.classes.dir}" />
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" includeantruntime="false">
-			<classpath refid="compile.classpath" />
-		</javac>
-		<copy todir="${build.classes.dir}">
-			<fileset dir="${resource.dir}">
-				<include name="**" />
-			</fileset>
-		</copy>
-	</target>
-	<!-- Create a jar file in build/jar folder -->
-	<target name="dist" depends="build" description="Create a jar file">
-		<!-- Update version.properties -->
-		<propertyfile file="${resource.dir}/version.properties">
-			<entry key="build.revision.number" type="int" operation="+" value="1" />
-		</propertyfile>
-		<property file="${resource.dir}/version.properties">
-		</property>
-		<propertyfile file="${resource.dir}/version.properties">
-			<entry key="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}" />
-		</propertyfile>
-		<!-- Create jar -->
-		<mkdir dir="${build.jar.dir}" />
-		<jar destfile="${build.jar.dir}\mustached-nemesis.jar" basedir="${build.dir}/classes">
-			<zipgroupfileset includes="*.jar" dir="${basedir}/lib" />
-			<manifest>
-				<attribute name="Main-Class" value="ee/ut/math/tvt/mustached_nemesis/Intro" />
-			</manifest>
-		</jar>
-	</target>
-	<!-- Run the created jar file -->
-	<target name="jrun" depends="dist" description="Run the application using jar file">
-		<java jar="${build.jar.dir}/mustached-nemesis.jar" fork="true" />
-	</target>
-	<!-- Run the application in console -->
-	<target name="runc" depends="build" description="Run the application (console)">
-		<java classname="ee.ut.math.tvt.mustached_nemesis.Intro" classpathref="test.classpath" fork="yes">
-			<arg value="console" />
-		</java>
-	</target>
-	<!--Git task/macro used for different git commands -->
-	<macrodef name="git">
-		<attribute name="command"/>
-		<attribute name="dir" default=""/>
-		<element name="args" optional="true"/>
-		<sequential>
-			<echo message="git @{command}"/>
-			<exec executable="git" dir="@{dir}">
-				<arg value="@{command}"/>
-				<args/>
-			</exec>
-		</sequential>
-	</macrodef>
+				<jvmarg value="-Xdebug" />
+				<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044" />
+			</java>
+		</target>
+		<!-- Compile the source code and set files in the right places -->
+		<target name="build" description="Build the system">
+			<mkdir dir="${build.dir}" />
+			<mkdir dir="${build.classes.dir}" />
+			<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" includeantruntime="false">
+				<classpath refid="compile.classpath" />
+			</javac>
+			<copy todir="${build.classes.dir}">
+				<fileset dir="${resource.dir}">
+					<include name="**" />
+				</fileset>
+			</copy>
+		</target>
+		<!-- Create a jar file in build/jar folder -->
+		<target name="dist" depends="build" description="Create a jar file">
+			<!-- Update version.properties -->
+			<propertyfile file="${resource.dir}/version.properties">
+				<entry key="build.revision.number" type="int" operation="+" value="1" />
+			</propertyfile>
+			<property file="${resource.dir}/version.properties">
+			</property>
+			<propertyfile file="${resource.dir}/version.properties">
+				<entry key="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}" />
+			</propertyfile>
+			<!-- Create jar -->
+			<mkdir dir="${build.jar.dir}" />
+			<jar destfile="${build.jar.dir}\mustached-nemesis.jar" basedir="${build.dir}/classes">
+				<zipgroupfileset includes="*.jar" dir="${basedir}/lib" />
+				<manifest>
+					<attribute name="Main-Class" value="ee/ut/math/tvt/mustached_nemesis/Intro" />
+				</manifest>
+			</jar>
+		</target>
+		<!-- Run the created jar file -->
+		<target name="jrun" depends="dist" description="Run the application using jar file">
+			<java jar="${build.jar.dir}/mustached-nemesis.jar" fork="true" />
+		</target>
+		<!-- Run the application in console -->
+		<target name="runc" depends="build" description="Run the application (console)">
+			<java classname="ee.ut.math.tvt.mustached_nemesis.Intro" classpathref="test.classpath" fork="yes">
+				<arg value="console" />
+			</java>
+		</target>
+		<!--Git task/macro used for different git commands -->
+		<macrodef name="git">
+			<attribute name="command"/>
+			<attribute name="dir" default=""/>
+			<element name="args" optional="true"/>
+			<sequential>
+				<echo message="git @{command}"/>
+				<exec executable="git" dir="@{dir}">
+					<arg value="@{command}"/>
+					<args/>
+				</exec>
+			</sequential>
+		</macrodef>
 
-	<!--Commit changes-->
-	<target name="git_commit" description="Commit to a local repository and push">
+		<!--Commit changes-->
+		<target name="git_commit" description="Commit to a local repository and push">
 
-		<input message="Username" addproperty="git_username"/>
-		<input message="Password" addproperty="git_password"/>
-		<input message="Commit message" addproperty="message" />
-		<git command="add">
-			<args>
-				<arg value="-A" />
-			</args>
-		</git>
-		<git command="commit">
-			<args>
-				<arg value="-m ${message}" />
-			</args>
-		</git>
-		<git command="push">
-			<args>
-				<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git"/>
-			</args>
-		</git>
-	</target>
-	<!--Create new tag-->
-	<target name="git_tag" description="Create a new tag">
-		<input message="Username" addproperty="git_username"/>
-		<input message="Password" addproperty="git_password"/>
-		<input message="Comment" addproperty="comment" />
-		<input message="Tag name" addproperty="tag" />
-		<git command="tag">
-			<args>
-				<arg value="-a" />
-				<arg value="${tag}" />
-				<arg value="-m ${comment}" />
-			</args>
-		</git>
-		<git command="push">
-			<args>
-				<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git"/>
-				<arg value="--tags" />
-			</args>
-		</git>
-	</target>
+			<input message="Username" addproperty="git_username"/>
+			<input message="Password" addproperty="git_password"/>
+			<input message="Commit message" addproperty="message" />
+			<git command="add">
+				<args>
+					<arg value="-A" />
+				</args>
+			</git>
+			<git command="commit">
+				<args>
+					<arg value="-m ${message}" />
+				</args>
+			</git>
+			<git command="push">
+				<args>
+					<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git"/>
+				</args>
+			</git>
+		</target>
+		<!--Create new tag-->
+		<target name="git_tag" description="Create a new tag">
+			<input message="Username" addproperty="git_username"/>
+			<input message="Password" addproperty="git_password"/>
+			<input message="Comment" addproperty="comment" />
+			<input message="Tag name" addproperty="tag" />
+			<git command="tag">
+				<args>
+					<arg value="-a" />
+					<arg value="${tag}" />
+					<arg value="-m ${comment}" />
+				</args>
+			</git>
+			<git command="push">
+				<args>
+					<arg value="https://${git_username}:${git_password}@github.com/Vladisls/mustached-nemesis.git"/>
+					<arg value="--tags" />
+				</args>
+			</git>
+		</target>
+		<target name="dbmanager" description="Start the HSQLDB manager">
+			<java
+            			classname="org.hsqldb.util.DatabaseManagerSwing"
+            			classpathref="run.classpath"
+            			fork="yes"
+        		>
+				<arg line="--user sa --url ${db.url}" />
+			</java>
+		</target>
 
-</project>
+		<target name="startdb" description="Start the HSQLDB with the default params">
+			<java
+        			    classname="org.hsqldb.Server"
+        			    classpathref="run.classpath"
+        			    fork="yes"
+        		>
+				<arg line="-database.0 '${db.file}' -dbname.0 '${db.alias}'" />
+			</java>
+		</target>
+	</project>
