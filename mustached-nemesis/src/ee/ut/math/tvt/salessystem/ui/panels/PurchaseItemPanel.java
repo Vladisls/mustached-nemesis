@@ -233,7 +233,7 @@ public class PurchaseItemPanel extends JPanel {
 	public void reset() {
 		// barCodeField.setText("");
 		quantityField.setText("1");
-		nameField.setText("");
+		barCodeField.setText("");
 		priceField.setText("");
 	}
 
