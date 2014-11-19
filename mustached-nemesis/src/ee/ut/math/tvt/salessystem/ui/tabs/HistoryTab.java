@@ -32,7 +32,7 @@ public class HistoryTab {
 		this.model = model;
 	}
 	
-    public HistoryTab() {} 
+  
     
     public Component draw() {
     	JPanel panel = new JPanel();
