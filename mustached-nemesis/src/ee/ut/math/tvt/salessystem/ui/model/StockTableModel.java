@@ -40,19 +40,23 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
 	 * same id, then existing item's quantity will be increased.
 	 * @param stockItem
 	 */
-	public void addItem(final StockItem stockItem) {
+	public boolean addItem(final StockItem stockItem) {
 		StockItem item = getItemById(stockItem.getId());
 		if (item != null) {
-			item.setQuantity(item.getQuantity() + stockItem.getQuantity());
+			//item.setQuantity(item.getQuantity() + stockItem.getQuantity()); // <--
 			log.debug("Found existing item " + stockItem.getName()
 					+ " increased quantity by " + stockItem.getQuantity());
+			fireTableDataChanged();
+			return true;
 		}
 		else {
 			rows.add(stockItem);
 			log.debug("Added " + stockItem.getName()
 					+ " quantity of " + stockItem.getQuantity());
+			fireTableDataChanged();
+			return false;
 		}
-		fireTableDataChanged();
+		
 	}
 
 	@Override
@@ -74,7 +78,7 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
 		return buffer.toString();
 	}
 	
-	//Sold items
+	/*//Sold items
 	
 	public void substractStock(List<SoldItem> soldItems) {
 		StockItem item;
@@ -83,6 +87,6 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
 			item.setQuantity(item.getQuantity() - el.getQuantity());
 		}
 		fireTableDataChanged();
-	}
+	}*/
 
 }

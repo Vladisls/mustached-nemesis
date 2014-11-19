@@ -21,13 +21,7 @@ public interface SalesDomainController {
 	 */
 	public List<StockItem> loadWarehouseState();
 
-	// business processes
-	/**
-	 * Initiate new business transaction - purchase of the goods.
-	 * 
-	 * @throws VerificationFailedException
-	 * 
-	 */
+	
 	
 	public List<SoldHistoryItem> loadSaleHistoryState();
 	// business processes

@@ -64,7 +64,7 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
     
     public T getItemByName(final String name) {
     	for (final T item : rows) {
-    		if (item.getName() == name)
+    		if (item.getName().equals(name))
     			return item;
     	}
     	return null;
