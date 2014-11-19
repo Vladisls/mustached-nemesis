@@ -13,9 +13,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 
 public class StockAddItemPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -31,35 +33,35 @@ public class StockAddItemPanel extends JPanel {
 	private JButton accept;
 	private JButton clear;;
 	private static final Logger log = Logger.getLogger(StockAddItemPanel.class);
-	
+
 	public StockAddItemPanel(SalesSystemModel model) {
 		this.model = model;
 		initComp();
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = getConstraints();
-		//Adds id
+		// Adds id
 		add(idLabel, gc);
 		gc.gridx = 1;
 		add(add_id, gc);
-		//Adds name
+		// Adds name
 		gc.gridx = 0;
 		gc.gridy = 1;
 		add(nameLabel, gc);
 		gc.gridx = 1;
 		add(add_name, gc);
-		//Adds price
+		// Adds price
 		gc.gridx = 0;
 		gc.gridy = 2;
 		add(priceLabel, gc);
 		gc.gridx = 1;
 		add(add_price, gc);
-		//Adds quantity
+		// Adds quantity
 		gc.gridx = 0;
 		gc.gridy = 3;
 		add(quantityLabel, gc);
 		gc.gridx = 1;
 		add(add_quantity, gc);
-		//Adds buttons
+		// Adds buttons
 		gc.ipady = 10;
 		gc.gridx = 0;
 		gc.gridy = 4;
@@ -67,13 +69,14 @@ public class StockAddItemPanel extends JPanel {
 		gc.gridx = 1;
 		add(clear, gc);
 	}
+
 	private void initComp() {
-		//Labels
+		// Labels
 		idLabel = new JLabel("Product ID:");
 		nameLabel = new JLabel("Product name:");
 		priceLabel = new JLabel("Product price:");
 		quantityLabel = new JLabel("Product quantity:");
-		//Textfields
+		// Textfields
 		add_id = new JTextField();
 		add_name = new JTextField();
 		add_price = new JTextField();
@@ -91,21 +94,21 @@ public class StockAddItemPanel extends JPanel {
 			}
 		});
 	}
-	
+
 	private void acceptEventHandler() {
 		StockItem si = null;
 		try {
-			//Gets id, checks if in use
+			// Gets id, checks if in use
 			long id = Long.parseLong(add_id.getText());
 			if (id < 0)
 				id = -id;
-			//Gets name
+			// Gets name
 			String name = add_name.getText();
-			//Gets price
+			// Gets price
 			double price = Double.parseDouble(add_price.getText());
 			if (price < 0)
 				price = -price;
-			//Gets quantity
+			// Gets quantity
 			int quantity = Integer.parseInt(add_quantity.getText());
 			if (quantity < 0)
 				quantity = -quantity;
@@ -114,22 +117,36 @@ public class StockAddItemPanel extends JPanel {
 			log.info("Invalid input");
 		}
 		if (si != null) {
-			//Finalize
-			model.getWarehouseTableModel().addItem(si);
+			// Finalize
+			boolean inTable = model.getWarehouseTableModel().addItem(si);
+			model.getSalesComboBoxModel().addElement(si.getName());
+			// model.getWarehouseTableModel().addItem(si);
+
+			Session session = HibernateUtil.currentSession();
+			session.getTransaction().begin();
+			if (!inTable) {
+				session.persist(si);
+			} else {
+				StockItem item = (StockItem) session.get(StockItem.class,
+						si.getId());
+				item.setQuantity(item.getQuantity() + si.getQuantity());
+			}
+			session.getTransaction().commit();
+
 			log.info("Item added to stock");
 			Window win = SwingUtilities.getWindowAncestor(accept);
 			win.setVisible(false);
 		}
 	}
-	
+
 	private void clearEventHandler() {
 		add_id.setText("");
 		add_name.setText("");
 		add_price.setText("");
 		add_quantity.setText("");
 		log.info("Fields cleared");
-		}
-	
+	}
+
 	private GridBagConstraints getConstraints() {
 		GridBagConstraints gc = new GridBagConstraints();
 		gc.fill = GridBagConstraints.HORIZONTAL;
@@ -138,5 +155,5 @@ public class StockAddItemPanel extends JPanel {
 		gc.weighty = 1.0;
 		gc.fill = GridBagConstraints.BOTH;
 		return gc;
-		}
+	}
 }
