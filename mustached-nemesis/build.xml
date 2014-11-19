@@ -5,6 +5,7 @@
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="build.jar.dir" value="${build.dir}/jar" />
 	<property name="resource.dir" value="${basedir}/resources" />
+	<property name="lib.dir" value="${basedir}/lib" />
 
 	<!-- database variables -->
 	<property name="conf.dir" value="${basedir}/conf" />
@@ -12,7 +13,7 @@
 	<property name="db.file" value="${data.dir}/POSdb" />
 	<property name="db.alias" value="POS" />
 	<property name="db.url" value="jdbc:hsqldb:hsql://localhost/POS" />
-	<property name="lib.dir" value="${basedir}/lib" />
+	
 	<property name="lib.hibernate.dir" value="${lib.dir}/hibernate" />
 	
 
@@ -45,7 +46,7 @@
 	<target name="run" depends="build" description="Run the application">
 		<java classname="ee.ut.math.tvt.mustached_nemesis.Intro" classpathref="run.classpath" fork="yes">
 			<jvmarg value="-Xdebug" />
-			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8021" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044" />
 		</java>
 	</target>
 	<!-- Compile the source code and set files in the right places -->
@@ -85,7 +86,7 @@
 	</target>
 	<!-- Run the created jar file -->
 	<target name="jrun" depends="dist" description="Run the application using jar file">
-		<java jar="${build.jar.dir}/mustached-nemesis.jar" fork="true" />
+		<java jar="${build.jar.dir}/mustached-nemesis.jar" fork="true" /> <!--_ or - -->
 	</target>
 	<!-- Run the application in console -->
 	<target name="runc" depends="build" description="Run the application (console)">
