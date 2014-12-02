@@ -58,8 +58,8 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
             if (item.getId() == id)
                 return item;
         }
-        //throw new NoSuchElementException();
-        return null;
+        throw new NoSuchElementException();
+        
     }
     
     public T getItemByName(final String name) {

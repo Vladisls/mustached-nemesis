@@ -17,7 +17,7 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
 	private static final Logger log = Logger.getLogger(StockTableModel.class);
 
 	public StockTableModel() {
-		super(new String[] {"Id", "Name", "Price", "Quantity"});
+		super(new String[] { "Id", "Name", "Price", "Quantity" });
 	}
 
 	@Override
@@ -36,27 +36,26 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
 	}
 
 	/**
-	 * Add new stock item to table. If there already is a stock item with
-	 * same id, then existing item's quantity will be increased.
+	 * Add new stock item to table. If there already is a stock item with same
+	 * id, then existing item's quantity will be increased.
+	 * 
 	 * @param stockItem
 	 */
 	public boolean addItem(final StockItem stockItem) {
-		StockItem item = getItemById(stockItem.getId());
-		if (item != null) {
-			//item.setQuantity(item.getQuantity() + stockItem.getQuantity()); // <--
-			log.debug("Found existing item " + stockItem.getName()
-					+ " increased quantity by " + stockItem.getQuantity());
+		try {
+			getItemById(stockItem.getId());
+			log.debug("Existing item " + stockItem.getName()
+					+ ", increased quantity by " + stockItem.getQuantity());
 			fireTableDataChanged();
 			return true;
-		}
-		else {
+		} catch (NoSuchElementException e) {
 			rows.add(stockItem);
-			log.debug("Added " + stockItem.getName()
-					+ " quantity of " + stockItem.getQuantity());
+			log.debug("Added item " + stockItem.getName() + ", quantity of "
+					+ stockItem.getQuantity());
 			fireTableDataChanged();
 			return false;
 		}
-		
+
 	}
 
 	@Override
@@ -77,16 +76,24 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
 
 		return buffer.toString();
 	}
-	
-	/*//Sold items
-	
-	public void substractStock(List<SoldItem> soldItems) {
-		StockItem item;
-		for (SoldItem el : soldItems) {
-			item = getItemById(el.getId());
-			item.setQuantity(item.getQuantity() - el.getQuantity());
+
+	public boolean hasEnoughInStock(StockItem item, int quantity) {
+		for (StockItem i : this.rows) {
+			if (i.getId().equals(item.getId())) {
+				return (i.getQuantity() >= quantity);
+			}
 		}
-		fireTableDataChanged();
-	}*/
+		return false;
+	}
+
+	public boolean validateNameUniqueness(String newName) {
+		for (StockItem item : rows) {
+			log.debug(" === comparing: " + newName + " vs. " + item.getName());
+			if (newName.equals(item.getName())) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 }

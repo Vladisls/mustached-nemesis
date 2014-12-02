@@ -104,6 +104,14 @@ public class StockAddItemPanel extends JPanel {
 				id = -id;
 			// Gets name
 			String name = add_name.getText();
+			if (!(name.length() > 0)) {
+				add_name.setText("Enter non-empty name");
+				throw new NumberFormatException();
+			} else if (!model.getWarehouseTableModel().validateNameUniqueness(
+					name)) {
+				add_name.setText("Entered name exists!");
+				throw new NumberFormatException();
+			}
 			// Gets price
 			double price = Double.parseDouble(add_price.getText());
 			if (price < 0)

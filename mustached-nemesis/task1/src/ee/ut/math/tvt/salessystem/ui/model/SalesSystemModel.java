@@ -41,8 +41,8 @@ public class SalesSystemModel {
 		this.domainController = domainController;
 
 		warehouseTableModel = new StockTableModel();
-		currentPurchaseTableModel = new PurchaseInfoTableModel();
-		historyPurchaseTableModel = new PurchaseInfoTableModel();
+		currentPurchaseTableModel = new PurchaseInfoTableModel(this);
+		historyPurchaseTableModel = new PurchaseInfoTableModel(this);
 		salesHistoryModel = new SalesHistoryModel();
 
 		// populate stock model with data from the warehouse
@@ -57,6 +57,12 @@ public class SalesSystemModel {
 		salesComboModel = new DefaultComboBoxModel<String>(
 				warehouseTableModel.getAllNames());
 
+	}
+	
+	//Testing
+	public SalesSystemModel() {
+		this.domainController = new SalesDomainControllerImpl();
+		warehouseTableModel = new StockTableModel();
 	}
 
 	public StockTableModel getWarehouseTableModel() {

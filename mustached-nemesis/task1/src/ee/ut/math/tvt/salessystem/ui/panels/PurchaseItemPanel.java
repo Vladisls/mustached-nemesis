@@ -185,7 +185,7 @@ public class PurchaseItemPanel extends JPanel {
 	 */
 	public void addItemEventHandler() {
 		// add chosen item to the shopping cart.
-		//StockItem stockItem = getStockItemByBarcode();
+		// StockItem stockItem = getStockItemByBarcode();
 		StockItem stockItem = getStockItemByName();
 		if (stockItem != null) {
 			int quantity;
@@ -196,25 +196,23 @@ public class PurchaseItemPanel extends JPanel {
 			} catch (NumberFormatException ex) {
 				quantity = 1;
 			}
-			SoldItem onListItem = model.getCurrentPurchaseTableModel()
-					.getItemByStockId(stockItem.getId());
-			if (onListItem != null)
-				quantity += onListItem.getQuantity();
-			if (stockItem.getQuantity() >= quantity) {
+
+			try {
 				model.getCurrentPurchaseTableModel().addItem(
 						new SoldItem(stockItem, quantity));
-			} else
-				JOptionPane
-						.showMessageDialog(
-								new JPanel(),
-								stockItem.getName()
-										+ " can't be purchased. This item is out of stock. Only "
-										+ stockItem.getQuantity()
-										+ " units remaining.",
-								"Error: out of stock",
-								JOptionPane.ERROR_MESSAGE);
+
+			} catch (SalesSystemException e) {
+				notEnoughWarning();
+			}
 
 		}
+	}
+
+	private void notEnoughWarning() {
+		JOptionPane.showMessageDialog(new JPanel(),
+				"Not enough in stock", "ERROR",
+				JOptionPane.ERROR_MESSAGE);
+		logger.debug("There was not enough units in warehouse to add current item.");
 	}
 
 	/**

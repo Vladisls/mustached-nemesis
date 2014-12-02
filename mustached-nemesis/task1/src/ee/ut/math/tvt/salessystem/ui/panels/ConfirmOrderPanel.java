@@ -73,14 +73,9 @@ public class ConfirmOrderPanel extends JPanel {
 	}
 
 	private void initComp() {
-		// Total sum
-		// int sum = 0;
-		// for (SoldItem el :
-		// model.getCurrentPurchaseTableModel().getTableRows())
-		// sum += el.getSum();
 		// Labeeeels
 		orderSumLabelText = new JLabel("Total sum: ");
-		payAmountLabel = new JLabel("Paid:");
+		payAmountLabel = new JLabel("Payment:");
 		changeLabelText = new JLabel("Change: ");
 		// orderSumLabelValue = new JLabel(String.valueOf(sum));
 		orderSumLabelValue = new JLabel(String.valueOf(model
@@ -118,20 +113,7 @@ public class ConfirmOrderPanel extends JPanel {
 	}
 
 	protected void acceptSaleEventHandler() {
-		/*
-		 * try { String tmp = changeLabelValue.getText(); if (tmp.length() == 0)
-		 * { calcChange(); tmp = changeLabelValue.getText(); } if
-		 * (Double.parseDouble(tmp) >= 0) { log.info("Sale complete"); // Adds
-		 * to the history model.getSalesHistoryModel().addItem( new
-		 * SoldHistoryItem(getCurrentDate(), getCurrentTime(),
-		 * model.getCurrentPurchaseTableModel() .getTableRows())); // Substracts
-		 * from the warehouse model.getWarehouseTableModel().substractStock(
-		 * model.getCurrentPurchaseTableModel().getTableRows()); // Closes
-		 * Window win = SwingUtilities.getWindowAncestor(acceptButton);
-		 * win.setVisible(false); } else throw new NumberFormatException(); }
-		 * catch (NumberFormatException e) {
-		 * changeLabelValue.setText("Invalid input"); }
-		 */
+
 
 		try {
 			if (Double.parseDouble(changeLabelValue.getText()) >= 0) {

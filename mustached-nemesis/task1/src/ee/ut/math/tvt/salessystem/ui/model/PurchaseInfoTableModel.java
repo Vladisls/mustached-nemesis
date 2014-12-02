@@ -14,8 +14,11 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
 	private static final Logger log = Logger
 			.getLogger(PurchaseInfoTableModel.class);
 
-	public PurchaseInfoTableModel() {
+	private SalesSystemModel model;
+
+	public PurchaseInfoTableModel(SalesSystemModel model) {
 		super(new String[] { "Id", "Name", "Price", "Quantity", "Sum" });
+		this.model = model;
 	}
 
 	@Override
@@ -58,22 +61,31 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
 	/**
 	 * Add new StockItem to table.
 	 */
-	public void addItem(final SoldItem item) {
+	public void addItem(final SoldItem item) throws SalesSystemException {
 		/**
 		 * XXX In case such stockItem already exists increase the quantity of
 		 * the existing stock.
 		 */
 		SoldItem onListItem = getItemByStockId(item.getStockItem().getId());
-		if (onListItem != null)
-			onListItem.setQuantity(item.getQuantity());
-		else
+		if (onListItem != null) {
+			int totalQuantity = onListItem.getQuantity() + item.getQuantity();
+			validateQuantityInStock(item.getStockItem(), totalQuantity);
+			onListItem.setQuantity(totalQuantity);
+			log.debug("Existing item " + onListItem.getName()
+					+ ", increased quantity by " + item.getQuantity());
+		}
+
+		else {
+			validateQuantityInStock(item.getStockItem(), item.getQuantity());
 			rows.add(item);
-		log.debug("Added " + item.getName() + " quantity of "
-				+ item.getQuantity());
+			log.debug("Added item " + item.getName() + ", quantity of "
+					+ item.getQuantity());
+		}
+
 		fireTableDataChanged();
 	}
 
-	public double getOrderTotal() {
+	public double getSum() {
 		double sum = 0;
 		for (SoldItem el : rows)
 			sum += el.getSum();
@@ -86,5 +98,13 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
 				return item;
 		}
 		return null;
+	}
+
+	private void validateQuantityInStock(StockItem item, int quantity)
+			throws SalesSystemException {
+		if (!model.getWarehouseTableModel().hasEnoughInStock(item, quantity)) {
+			log.info(" -- not enough in stock!");
+			throw new SalesSystemException();
+		}
 	}
 }
