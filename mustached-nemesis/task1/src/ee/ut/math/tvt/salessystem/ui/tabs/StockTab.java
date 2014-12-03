@@ -18,19 +18,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 
-
-
 public class StockTab {
 
-  private JButton addItem;
+	private JButton addItem;
 
-  private SalesSystemModel model;
+	private SalesSystemModel model;
 
-  public StockTab(SalesSystemModel model) {
-    this.model = model;
-  }
+	public StockTab(SalesSystemModel model) {
+		this.model = model;
+	}
 
-  // warehouse stock tab - consists of a menu and a table
+	// warehouse stock tab - consists of a menu and a table
 	public Component draw() {
 		JPanel panel = new JPanel();
 		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -49,8 +47,7 @@ public class StockTab {
 		return panel;
 	}
 
-
-	//warehouse
+	// warehouse
 	private Component drawStockMenuPanel() {
 		JPanel panel = new JPanel();
 
@@ -66,11 +63,10 @@ public class StockTab {
 			}
 
 			private void addstufftowarehouse() {
-				JOptionPane.showOptionDialog(null, new StockAddItemPanel(model),
-								"Warehouse stock add",
-								JOptionPane.DEFAULT_OPTION,
-								JOptionPane.DEFAULT_OPTION, null,
-								new Object[] {}, null);
+				JOptionPane.showOptionDialog(null,
+						new StockAddItemPanel(model), "Warehouse stock add",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION,
+						null, new Object[] {}, null);
 			}
 		});
 		gc.gridwidth = GridBagConstraints.RELATIVE;
@@ -79,7 +75,8 @@ public class StockTab {
 		panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		return panel;
 	}
-	//table menu
+
+	// table menu
 	private Component drawStockMainPanel() {
 		JPanel panel = new JPanel();
 		JTable table = new JTable(model.getWarehouseTableModel());
@@ -96,6 +93,5 @@ public class StockTab {
 		panel.setBorder(BorderFactory.createTitledBorder("Warehouse status"));
 		return panel;
 	}
-
 
 }
