@@ -5,6 +5,7 @@ import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.domain.exception.SalesSystemException;
 import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
@@ -13,17 +14,21 @@ import org.apache.log4j.Logger;
 public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger log = Logger.getLogger(PurchaseInfoTableModel.class);
+	private static final Logger log = Logger
+			.getLogger(PurchaseInfoTableModel.class);
 
 	private SalesSystemModel model;
 
-    public PurchaseInfoTableModel() {
-        super(new String[] { "Id", "Name", "Price", "Quantity", "Sum"});
-    }
+	Sale currentSale;
+
+	public PurchaseInfoTableModel() {
+		super(new String[] { "Id", "Name", "Price", "Quantity", "Sum" });
+		currentSale = new Sale(new ArrayList<SoldItem>());
+	}
 
 	public PurchaseInfoTableModel(SalesSystemModel model) {
-	    this();
-	    this.model = model;
+		this();
+		this.model = model;
 	}
 
 	@Override
@@ -51,7 +56,7 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
 			buffer.append(headers[i] + "\t");
 		buffer.append("\n");
 
-		for (final SoldItem item : rows) {
+		for (final SoldItem item : currentSale.getSoldItems()) {
 			buffer.append(item.getId() + "\t");
 			buffer.append(item.getName() + "\t");
 			buffer.append(item.getPrice() + "\t");
@@ -63,79 +68,74 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
 		return buffer.toString();
 	}
 
-
 	public SoldItem getForStockItem(long stockItemId) {
-	    for (SoldItem item : rows) {
-	        if (item.getStockItem().getId().equals(stockItemId)) {
-	            return item;
-	        }
-	    }
-	    return null;
+		for (SoldItem item : currentSale.getSoldItems()) {
+			if (item.getStockItem().getId().equals(stockItemId)) {
+				return item;
+			}
+		}
+		return null;
 	}
 
+	/**
+	 * Add new StockItem to table.
+	 */
+	public void addItem(final StockItem stockItem, int quantity)
+			throws SalesSystemException {
 
-    /**
-     * Add new StockItem to table.
-     */
-    public void addItem(final SoldItem soldItem) throws SalesSystemException {
+		SoldItem existingItem = getForStockItem(stockItem.getId());
 
-        StockItem stockItem = soldItem.getStockItem();
-        long stockItemId = stockItem.getId();
-        SoldItem existingItem = getForStockItem(stockItemId);
+		if (existingItem != null) {
+			int totalQuantity = existingItem.getQuantity() + quantity;
+			validateQuantityInStock(stockItem, totalQuantity);
+			existingItem.setQuantity(totalQuantity);
 
-        if (existingItem != null) {
-            int totalQuantity = existingItem.getQuantity() + soldItem.getQuantity();
-            validateQuantityInStock(stockItem, totalQuantity);
-            existingItem.setQuantity(totalQuantity);
+			log.debug("Found existing item " + existingItem.getName()
+					+ " increased quantity by " + quantity);
 
-            log.debug("Found existing item " + soldItem.getName()
-                    + " increased quantity by " + soldItem.getQuantity());
+		} else {
+			validateQuantityInStock(stockItem, quantity);
+			currentSale.addSoldItem(new SoldItem(stockItem, quantity));
+			log.debug("Added " + stockItem.getName() + " quantity of "
+					+ quantity);
+		}
 
-        } else {
-            validateQuantityInStock(soldItem.getStockItem(), soldItem.getQuantity());
-            rows.add(soldItem);
-            log.debug("Added " + soldItem.getName()
-                    + " quantity of " + soldItem.getQuantity());
-        }
+		fireTableDataChanged();
+	}
 
-        fireTableDataChanged();
-    }
+	/**
+	 * Returns the total sum that needs to be paid for all the items in the
+	 * basket.
+	 */
+	public double getTotalPrice() {
+		double price = 0.0;
+		for (SoldItem item : currentSale.getSoldItems()) {
+			price += item.getSum();
+		}
+		return price;
+	}
 
-    /**
-     * Returns the total sum that needs to be paid for all the items in the basket.
-     */
-    public double getTotalPrice() {
-        double price = 0.0;
-        for (SoldItem item : rows) {
-            price += item.getSum();
-        }
-        return price;
-    }
+	private void validateQuantityInStock(StockItem item, int quantity)
+			throws SalesSystemException {
 
+		if (!model.getWarehouseTableModel().hasEnoughInStock(item, quantity)) {
+			log.info(" -- not enough in stock!");
+			throw new SalesSystemException();
+		}
 
+	}
 
-    private void validateQuantityInStock(StockItem item, int quantity)
-        throws SalesSystemException {
+	public List<SoldItem> getTableRows() {
+		return currentSale.getSoldItems();
+	}
 
-        if (!model.getWarehouseTableModel().hasEnoughInStock(item, quantity)) {
-            log.info(" -- not enough in stock!");
-            throw new SalesSystemException();
-        }
+	public void setSale(Sale sale) {
+		currentSale = sale;
+		fireTableDataChanged();
+	}
 
-    }
-
-
-    public static PurchaseInfoTableModel getEmptyTable() {
-        return new PurchaseInfoTableModel();
-    }
-
-    /**
-     * Replace the current contents of the table with the SoldItems of the given Sale.
-     * (Used by the history details table in the HistoryTab).
-     */
-    public void showSale(Sale sale) {
-        this.rows = new ArrayList<SoldItem>(sale.getSoldItems());
-        fireTableDataChanged();
-    }
+	public Sale getSale() {
+		return currentSale;
+	}
 
 }

@@ -4,6 +4,7 @@ import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
 import ee.ut.math.tvt.salessystem.domain.data.Client;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.domain.data.Sale;	
 import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -132,7 +133,9 @@ public class ConsoleUI {
                 for(StockItem stockItem : cart) {
                     soldItems.add(new SoldItem(stockItem, stockItem.getQuantity()));
                 }
-                dc.submitCurrentPurchase(soldItems, selectedClient);
+                Sale sale = new Sale(selectedClient);
+                sale.setSoldItems(soldItems);
+                dc.registerSale(sale);
                 cart.clear();
             } catch (VerificationFailedException e) {
                 log.error(e.getMessage());
@@ -140,7 +143,7 @@ public class ConsoleUI {
 
         } else if (c[0].equals("r")) {
 
-            dc.cancelCurrentPurchase();
+        	System.out.println("Sale cancelled!");
             cart.clear();
 
         } else if (c[0].equals("a") && c.length == 3) {
@@ -180,7 +183,7 @@ public class ConsoleUI {
            return;
         }
         //Test getCLient
-        selectedClient = dc.getClient(clients.get(index - 1).getId());
+        selectedClient = clients.get(index-1);
         System.out.println("Selected client: " + selectedClient.getFirstName());
     }
 

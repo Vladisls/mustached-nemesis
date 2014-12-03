@@ -52,46 +52,11 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 		return clients;
 	}
 
-	public Client getClient(long id) {
-		return (Client) session.get(Client.class, id);
-	}
 
 	private StockItem getStockItem(long id) {
 		return (StockItem) session.get(StockItem.class, id);
 	}
 
-	public void submitCurrentPurchase(List<SoldItem> soldItems,
-			Client currentClient) {
-
-		// Begin transaction
-		Transaction tx = session.beginTransaction();
-
-		// construct new sale object
-		Sale sale = new Sale(soldItems);
-		// sale.setId(null);
-		sale.setSellingTime(new Date());
-
-		// set client who made the sale
-		sale.setClient(currentClient);
-
-		// Reduce quantities of stockItems in warehouse
-		for (SoldItem item : soldItems) {
-			// Associate with current sale
-			item.setSale(sale);
-
-			StockItem stockItem = getStockItem(item.getStockItem().getId());
-			stockItem.setQuantity(stockItem.getQuantity() - item.getQuantity());
-			session.save(stockItem);
-		}
-
-		session.save(sale);
-
-		// end transaction
-		tx.commit();
-
-		model.getPurchaseHistoryTableModel().addRow(sale);
-
-	}
 
 	public void registerSale(Sale sale) {
 		// Begin transaction
@@ -115,24 +80,6 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 		session.save(stockItem);
 		tx.commit();
 		log.info("Added new stockItem : " + stockItem);
-	}
-
-	public void cancelCurrentPurchase() {
-		// XXX - Cancel current purchase
-		log.info("Current purchase canceled");
-	}
-
-	public void startNewPurchase() {
-		// XXX - Start new purchase
-		log.info("New purchase started");
-	}
-
-	public void setModel(SalesSystemModel model) {
-		this.model = model;
-	}
-
-	public Sale getSale(Long id) {
-		return (Sale) session.get(Sale.class, id);
 	}
 
 	@Override
