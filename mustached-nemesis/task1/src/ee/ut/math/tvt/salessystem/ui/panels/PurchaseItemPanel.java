@@ -3,6 +3,7 @@ package ee.ut.math.tvt.salessystem.ui.panels;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+import ee.ut.math.tvt.salessystem.domain.exception.SalesSystemException;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,12 +25,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import org.apache.log4j.Logger;
+
 /**
  * Purchase pane + shopping cart tabel UI.
  */
 public class PurchaseItemPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final Logger logger = Logger.getLogger(SalesSystemModel.class);
 
 	// Text field on the dialogPane
 	private JTextField barCodeField;
@@ -212,7 +217,7 @@ public class PurchaseItemPanel extends JPanel {
 		JOptionPane.showMessageDialog(new JPanel(),
 				"Not enough in stock", "ERROR",
 				JOptionPane.ERROR_MESSAGE);
-		logger.debug("There was not enough units in warehouse to add current item.");
+		logger.debug("There were not enough units in warehouse to add current item.");
 	}
 
 	/**

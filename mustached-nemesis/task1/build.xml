@@ -6,6 +6,8 @@
 	<property name="build.jar.dir" value="${build.dir}/jar" />
 	<property name="resource.dir" value="${basedir}/resources" />
 	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="test.dir" value="${basedir}/test" />
+	<property name="build.test.dir" value="${build.dir}/test" />
 
 	<!-- database variables -->
 	<property name="conf.dir" value="${basedir}/conf" />
@@ -13,9 +15,9 @@
 	<property name="db.file" value="${data.dir}/POSdb" />
 	<property name="db.alias" value="POS" />
 	<property name="db.url" value="jdbc:hsqldb:hsql://localhost/POS" />
-	
+
 	<property name="lib.hibernate.dir" value="${lib.dir}/hibernate" />
-	
+
 
 	<!-- Classpath definitions -->
 	<path id="compile.classpath">
@@ -26,7 +28,7 @@
 			<include name="*.jar" />
 		</fileset>
 	</path>
-	
+
 	<path id="run.classpath">
 		<pathelement location="${build.classes.dir}" />
 		<pathelement location="${conf.dir}" />
@@ -53,8 +55,7 @@
 	<target name="build" description="Build the system">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.classes.dir}" />
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" 
-			debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" includeantruntime="false">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" includeantruntime="false">
 			<classpath refid="compile.classpath" />
 		</javac>
 		<copy todir="${build.classes.dir}">
@@ -74,7 +75,7 @@
 		<propertyfile file="${resource.dir}/version.properties">
 			<entry key="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}" />
 		</propertyfile>
-		
+
 		<!-- Create jar -->
 		<mkdir dir="${build.jar.dir}" />
 		<jar destfile="${build.jar.dir}\mustached-nemesis.jar" basedir="${build.dir}/classes">
@@ -86,7 +87,8 @@
 	</target>
 	<!-- Run the created jar file -->
 	<target name="jrun" depends="dist" description="Run the application using jar file">
-		<java jar="${build.jar.dir}/mustached-nemesis.jar" fork="true" /> <!--_ or - -->
+		<java jar="${build.jar.dir}/mustached-nemesis.jar" fork="true" />
+		<!--_ or - -->
 	</target>
 	<!-- Run the application in console -->
 	<target name="runc" depends="build" description="Run the application (console)">
@@ -156,11 +158,45 @@
 			<arg line="--user sa --url ${db.url}" />
 		</java>
 	</target>
-	
+
 	<target name="startdb" description="Start the HSQLDB with the default params">
 		<java classname="org.hsqldb.Server" classpathref="run.classpath" fork="yes">
 			<arg line="-database.0 '${db.file}' -dbname.0 '${db.alias}'" />
 		</java>
 	</target>
+
+	<path id="libs">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="build-tests" depends="build" description="Build the system">
+		<mkdir dir="${build.test.dir}" />
+		<javac srcdir="${test.dir}" destdir="${build.test.dir}" debug="true" debuglevel="lines,vars,source" encoding="utf-8" compiler="modern" includeantruntime="false" target="1.5" source="1.5" classpathref="libs">
+			<classpath>
+				<pathelement path="${build.classes.dir}" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="test" depends="build-tests" description="Run the template application">
+		<junit>
+			<classpath refid="test-classpath" />
+			<formatter type="brief" usefile="false" />
+			<batchtest>
+				<fileset dir="${build.test.dir}" includes="**/*.class" />
+			</batchtest>
+		</junit>
+	</target>
+
+	<path id="test-classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${build.classes.dir}/" />
+		<pathelement path="${build.test.dir}/" />
+	</path>
+
 
 </project>

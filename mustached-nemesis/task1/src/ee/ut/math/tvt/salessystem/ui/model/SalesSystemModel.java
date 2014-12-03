@@ -5,6 +5,7 @@ import javax.swing.DefaultComboBoxModel;
 import org.apache.log4j.Logger;
 
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
+import ee.ut.math.tvt.salessystem.domain.controller.impl.SalesDomainControllerImpl;
 
 /**
  * Main model. Holds all the other models.

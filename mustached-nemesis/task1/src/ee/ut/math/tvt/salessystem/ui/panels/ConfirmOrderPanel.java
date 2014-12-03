@@ -79,7 +79,7 @@ public class ConfirmOrderPanel extends JPanel {
 		changeLabelText = new JLabel("Change: ");
 		// orderSumLabelValue = new JLabel(String.valueOf(sum));
 		orderSumLabelValue = new JLabel(String.valueOf(model
-				.getCurrentPurchaseTableModel().getOrderTotal()));
+				.getCurrentPurchaseTableModel().getSum()));
 		changeLabelValue = new JLabel();
 		// More initializing
 		payAmountField = new JTextField();
