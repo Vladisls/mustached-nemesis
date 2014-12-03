@@ -16,7 +16,7 @@ public class PurchaseTest {
 	@Before
 	public void setUp() {
 		item1 = new StockItem(1L, "Leib", "Must", 5.0, 5);
-		item2 = new StockItem(1L, "Piim", "Kodune", 7.0, 5);
+		item2 = new StockItem(2L, "Piim", "Kodune", 7.0, 5);
 		ssm = new SalesSystemModel();
 		ssm.getWarehouseTableModel().addItem(item1);
 		ssm.getWarehouseTableModel().addItem(item2);
